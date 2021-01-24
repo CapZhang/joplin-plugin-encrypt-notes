@@ -1,0 +1,243 @@
+/*******************************************************************************
+ * Nord2 - A sub-theme of Joplin's Built-in Nord theme.
+ *
+ * Latest Version: https://github.com/mattsbennett/joplin-Nord2
+ * Designed by: Matthew Bennett
+ * Goals: Readability, even, mid-contrast, minimalism.
+ *
+ * userstyle.css: Custom stylesheet for rendered Markdown.
+ ******************************************************************************/
+
+/* Variables ---------------------------------------------------------------- */
+:root {
+  /* Nord2 values */
+  --lighter-grey: hsla(0, 0%, 95%, 1);
+  --light-grey: hsla(0, 0%, 85%, 1);
+  --mid-grey: hsla(0, 0%, 70%, 1);
+  --font-sans: "SF Pro Text", "Roboto", sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  /* Nord values */
+  --nord-highlight: #00aeef;
+  --nord-sidebar-selection: rgb(94, 129, 172);
+  --nord-sidebar: rgb(67, 76, 94);
+  --nord-note-list: rgb(46, 52, 64);
+  --nord-note-list-selected: rgb(129, 161, 193);
+
+  /* Nord derivative values */
+  --nord-sidebar-selection-dark: hsla(213, 32%, 32%, 1);
+  --nord-highlight-light: hsla(196, 100%, 67%, 1);
+  --nord-sidebar-light: hsla(220, 17%, 40%, 1);
+  --nord-note-list-background-light: hsla(220, 16%, 25%, 1);
+  /*toc需要的*/
+  /* side-bar background color from light theme */
+  --floating-bg: rgb(49, 54, 64);
+
+  --link-color: rgb(255, 255, 255);
+
+  --overlay-dark1: rgba(0, 0, 0, 0.1);
+  --overlay-dark2: rgba(0, 0, 0, 0.2);
+  --overlay-dark5: rgba(0, 0, 0, 0.5);
+  --overlay-light1: rgba(255, 255, 255, 0.1);
+  --overlay-light5: rgba(255, 255, 255, 0.5);
+
+  /* TWEAK: Set to none if no borders shall be shown (not tested) */
+  --default-border: 1px solid var(--overlay-light1);
+
+  /* TWEAK: Change to adapt the style of the corners of some UI elements */
+  --dialog-radius: 10px;
+  --scroll-radius: 3px;
+
+  /* TWEAK: Show/hide shadow on floating TOC */
+  --shadow: 0 2px 12px 0 var(--overlay-dark2);
+}
+
+/* Base Elements ------------------------------------------------------------ */
+body {
+  font-family: var(--font-sans) !important;
+  font-weight: 300 !important;
+}
+
+h1 {
+  border-bottom: 1px solid var(--nord-sidebar-light) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+h7 {
+  font-weight: 400 !important;
+}
+
+ul {
+  margin-top: 0 !important;
+}
+
+li {
+  margin-bottom: 0 !important;
+}
+
+pre {
+  background-color: rgb(26 27 29) !important;
+  border-radius: 10px;
+}
+
+blockquote {
+  border-left-color: var(--mid-grey);
+  font-style: italic;
+  opacity: 0.85 !important;
+}
+
+#rendered-md {
+  padding: 3%;
+}
+
+/* Custom checkboxes -------------------------------------------------------- */
+.checkbox-wrapper input[type="checkbox"] {
+  margin-left: -3.75em !important;
+  opacity: 0 !important;
+}
+
+.checkbox-wrapper label {
+  display: inline-block;
+  padding-left: 25px;
+  position: relative;
+}
+
+.checkbox-wrapper label::before,
+.checkbox-wrapper label::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+}
+
+/* The fake checkbox */
+.checkbox-wrapper label::before {
+  background-color: var(--light-grey);
+  border: 1px solid var(--light-grey);
+  height: 16px;
+  left: 0px;
+  top: 3px;
+  width: 16px;
+}
+
+.checkbox-wrapper label:hover::before {
+  opacity: 0.8;
+  transition: opacity 0.15s ease-in;
+}
+
+/* Checkmark of the fake checkbox */
+.checkbox-wrapper label::after {
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+  color: var(--nord-sidebar);
+  height: 5px;
+  left: 4px;
+  top: 7px;
+  transform: rotate(-45deg);
+  width: 9px;
+}
+
+/* Hide the checkmark by default */
+.checkbox-wrapper input[type="checkbox"] + label::after {
+  content: none;
+}
+
+/* Unhide on the checked state */
+.checkbox-wrapper input[type="checkbox"]:checked + label::after {
+  content: "";
+}
+
+/* Add focus styles on the outer-box of the fake checkbox*/
+.checkbox-wrapper input[type="checkbox"]:focus + label::before {
+  outline: var(--nord-highlight-light) auto 2px;
+}
+
+/* Checked checkbox label styles */
+.md-checkbox .checkbox-label-checked {
+  font-style: italic;
+  opacity: 0.65 !important;
+}
+
+li.md-checkbox {
+  margin-bottom: 0.4em !important;
+}
+
+/* Inline code -------------------------------------------------------------- */
+.inline-code {
+  border-radius: 2px !important;
+  border: none !important;
+  color: var(--nord-highlight-light);
+  padding: 0.25em 0.5em !important;
+}
+
+/* Code blocks -------------------------------------------------------------- */
+pre {
+  font-family: var(--font-mono) !important;
+}
+
+a {
+  color: var(--nord-highlight-light);
+}
+
+/* Resource icons (pdf etc) ------------------------------------------------- */
+.resource-icon {
+  background-color: var(--nord-highlight-light) !important;
+  top: 0.35em !important;
+}
+
+/*toc*/
+/**************************************************************************************************
+ *  TABLE OF CONTENTS
+ *  Based on the idea from here: https://discourse.joplinapp.org/t/toc-as-the-sidebar/5979/34
+ *************************************************************************************************/
+
+nav.table-of-contents > ul {
+  background: none;
+  font-size: small;
+  height: 80%;
+  overflow: hidden;
+  padding: 5px;
+  position: fixed;
+  right: 6px;
+  top: 0;
+  width: 10px;
+  z-index: 10;
+}
+nav.table-of-contents > ul:hover {
+  background-color: var(--floating-bg);
+  border-radius: var(--dialog-radius);
+  box-shadow: var(--shadow);
+  overflow: scroll;
+  width: auto;
+}
+nav.table-of-contents > ul:hover li {
+  display: list-item;
+}
+nav.table-of-contents ul {
+  list-style-type: none;
+  margin-bottom: 0;
+  margin-left: 8px;
+  margin-top: 0;
+  min-width: 100px;
+}
+nav.table-of-contents li {
+  display: none;
+  line-height: 1.8em;
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+nav.table-of-contents li a {
+  color: var(--link-color) !important;
+  opacity: 0.8;
+  padding: 5px;
+}
+nav.table-of-contents ul li ul li {
+  border-left: var(--default-border) !important;
+}
+nav.table-of-contents a {
+  text-decoration: none !important;
+}

@@ -92,11 +92,15 @@ joplin.plugins.register({
 		// await joplin.views.toolbarButtons.create('fileEncry', 'fileEncry', ToolbarButtonLocation.EditorToolbar);
 		await joplin.workspace.onNoteSelectionChange(async (event: any) => {
 			// 当前选中的文件
-			const note = await joplin.workspace.selectedNote();
-			console.log("note->", note);
-			note.is_change = 0;
-			note.try_number = 0;
-			fileEncryption(note,"onNoteSelectionChange");
+			try {
+				const note = await joplin.workspace.selectedNote();
+				console.log("note->", note);
+				note.is_change = 0;
+				note.try_number = 0;
+				fileEncryption(note,"onNoteSelectionChange");
+			} catch {
+				console.log("error");
+			}
 			
 		});
 		await joplin.workspace.onNoteChange(async (event: any) => {
