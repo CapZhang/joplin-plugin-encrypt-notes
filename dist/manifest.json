@@ -1,0 +1,12 @@
+{
+	"manifest_version": 1,
+	"id": "File_encryption",
+	"app_min_version": "1.6",
+	"version": "1.0.0",
+	"name": "File encryption",
+	"description": "File encryption",
+	"author": "CaptainZXX",
+	"homepage_url": "",
+	"repository_url": "",
+	"keywords": []
+}
