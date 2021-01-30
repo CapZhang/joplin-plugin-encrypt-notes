@@ -175,7 +175,10 @@ joplin.plugins.register({
 						if (Dbody) {
 							// await joplin.data.put(["notes", note.id], null, { body: Dbody })
 							// 发现一个新的api可以直接改变note的内容
-							await joplin.commands.execute("editor.setText",Dbody)
+							// await joplin.commands.execute("editor.setText", Dbody)
+							await joplin.commands.execute("textSelectAll");
+							await joplin.commands.execute("textCut");
+							await joplin.commands.execute("insertText",Dbody);
 							console.log("Dbody note->", note);
 							note.is_change = 0;
 							break;
@@ -203,7 +206,10 @@ joplin.plugins.register({
 						// await joplin.data.put(["notes", note.id], null, { body: "!!!<br>>>> Do not change this file <br>" + aes_body });
 						// note.body = "!!!<br>>>> Do not change this file <br>" + aes_body;
 						// 发现一个新的api可以直接改变note的内容
-						await joplin.commands.execute("editor.setText","!!!<br>>>> Do not change this file <br>" + aes_body)
+						await joplin.commands.execute("textSelectAll");
+						await joplin.commands.execute("textCut");
+						await joplin.commands.execute("insertText", "!!!<br>>>> Do not change this file <br>" + aes_body);
+						// await joplin.commands.execute("editor.setText","!!!<br>>>> Do not change this file <br>" + aes_body)
 						console.log("ency->",note);
 						
 						encrypt_time = (new Date()).valueOf();
