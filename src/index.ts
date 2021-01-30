@@ -173,8 +173,10 @@ joplin.plugins.register({
 						console.log("aes_body->", aes_body);
 						console.log("key->", password_result.formData.password.password);
 						if (Dbody) {
-							await joplin.data.put(["notes", note.id], null, { body: Dbody })
-							console.log("Dbody->", Dbody);
+							// await joplin.data.put(["notes", note.id], null, { body: Dbody })
+							// 发现一个新的api可以直接改变note的内容
+							await joplin.commands.execute("editor.setText",Dbody)
+							console.log("Dbody note->", note);
 							note.is_change = 0;
 							break;
 						} else {
@@ -198,7 +200,12 @@ joplin.plugins.register({
 						// 没有密码，或者密码为空，则弹出弹窗设置密码，并用密码加密文本
 						console.log(password_result.id, password_result.formData.password.password);
 						let aes_body = getAES(note.body, password_result.formData.password.password);
-						await joplin.data.put(["notes", note.id], null, { body: "!!!<br>>>> Do not change this file <br>" + aes_body });
+						// await joplin.data.put(["notes", note.id], null, { body: "!!!<br>>>> Do not change this file <br>" + aes_body });
+						// note.body = "!!!<br>>>> Do not change this file <br>" + aes_body;
+						// 发现一个新的api可以直接改变note的内容
+						await joplin.commands.execute("editor.setText","!!!<br>>>> Do not change this file <br>" + aes_body)
+						console.log("ency->",note);
+						
 						encrypt_time = (new Date()).valueOf();
 						break;
 					}
