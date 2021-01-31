@@ -21,51 +21,51 @@ const CryptoJS = require("crypto-js")
 
 function getAesString(data, key, iv) {//加密
 	let use_key = key + "0000000000000000"
-	use_key = use_key.substr(0,16)
+	use_key = use_key.substr(0, 16)
 	var key = CryptoJS.enc.Utf8.parse(use_key);
-	console.log("Encrypt use key->",key);
-    var iv   = key;
-    var encrypted =CryptoJS.AES.encrypt(data,key,
-        {
-            iv:iv,
-            mode:CryptoJS.mode.CBC,
-            padding:CryptoJS.pad.Pkcs7
+	console.log("Encrypt use key->", key);
+	var iv = key;
+	var encrypted = CryptoJS.AES.encrypt(data, key,
+		{
+			iv: iv,
+			mode: CryptoJS.mode.CBC,
+			padding: CryptoJS.pad.Pkcs7
 		}).toString();
 	// let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encrypted));
-    return encrypted;    //返回的是base64格式的密文
+	return encrypted;    //返回的是base64格式的密文
 }
 function getDAesString(encrypted, key, iv) {//解密
 	let use_key = key + "0000000000000000"
-	use_key = use_key.substr(0,16)
+	use_key = use_key.substr(0, 16)
 	var key = CryptoJS.enc.Utf8.parse(use_key);
 	console.log("Decryption use key->", use_key);
-	console.log("Decryption data->",encrypted);
+	console.log("Decryption data->", encrypted);
 	var iv = key;
 	// let decData = CryptoJS.enc.Base64.parse(encrypted).toString(CryptoJS.enc.Utf8);
-    var decrypted =CryptoJS.AES.decrypt(encrypted,key,
-        {
-            iv:iv,
-            mode:CryptoJS.mode.CBC,
-            padding:CryptoJS.pad.Pkcs7
+	var decrypted = CryptoJS.AES.decrypt(encrypted, key,
+		{
+			iv: iv,
+			mode: CryptoJS.mode.CBC,
+			padding: CryptoJS.pad.Pkcs7
 		});
-	console.log("Decryption->",decrypted);
-	return decrypted.toString(CryptoJS.enc.Utf8);  
+	console.log("Decryption->", decrypted);
+	return decrypted.toString(CryptoJS.enc.Utf8);
 	// return decrypted;
 }
 
-function getAES(data,key){ //加密
-    var iv   = 'joplinCryptoJS';
-    var encrypted =getAesString(data,key,iv); //密文
-    // var encrypted1 =CryptoJS.enc.Utf8.parse(encrypted);
-    return encrypted;
+function getAES(data, key) { //加密
+	var iv = 'joplinCryptoJS';
+	var encrypted = getAesString(data, key, iv); //密文
+	// var encrypted1 =CryptoJS.enc.Utf8.parse(encrypted);
+	return encrypted;
 }
 
-function getDAes(data,key){//解密
-    var iv   = 'joplinCryptoJS';
+function getDAes(data, key) {//解密
+	var iv = 'joplinCryptoJS';
 	var decryptedStr = getDAesString(data, key, iv);
-	console.log("Daes",data);
-	console.log("Daes",decryptedStr);
-    return decryptedStr;
+	console.log("Daes", data);
+	console.log("Daes", decryptedStr);
+	return decryptedStr;
 }
 
 joplin.plugins.register({
@@ -85,7 +85,7 @@ joplin.plugins.register({
 				note.is_change = 0;
 				fileEncryption(note, "commands");
 			},
-				
+
 		});
 		// 加一个按钮
 		await joplin.views.toolbarButtons.create('fileEncry', 'fileEncry', ToolbarButtonLocation.NoteToolbar);
@@ -97,21 +97,23 @@ joplin.plugins.register({
 				console.log("note->", note);
 				note.is_change = 0;
 				note.try_number = 0;
-				fileEncryption(note,"onNoteSelectionChange");
+				fileEncryption(note, "onNoteSelectionChange");
 			} catch {
 				console.log("error");
 			}
-			
+
 		});
 		await joplin.workspace.onNoteChange(async (event: any) => {
 			const note = await joplin.workspace.selectedNote();
 			note.try_number = 0;
 			if (!note.is_change) note.is_change = 0;
-			note.is_change += 1;
+			if ((new Date()).valueOf() > encrypt_time) {
+				note.is_change += 1;
+			}
 			if ((new Date()).valueOf() - encrypt_time < 500) return;
-			fileEncryption(note,"onNoteChange");
+			fileEncryption(note, "onNoteChange");
 		});
-		
+
 		// 对话框
 		const dialogs = joplin.views.dialogs;
 		// 询问密码的弹窗
@@ -178,7 +180,7 @@ joplin.plugins.register({
 							// await joplin.commands.execute("editor.setText", Dbody)
 							await joplin.commands.execute("textSelectAll");
 							await joplin.commands.execute("textCut");
-							await joplin.commands.execute("insertText",Dbody);
+							await joplin.commands.execute("insertText", Dbody);
 							console.log("Dbody note->", note);
 							note.is_change = 0;
 							break;
@@ -188,12 +190,12 @@ joplin.plugins.register({
 							continue;
 						}
 					}
-				
+
 				} else {
 					// 文件不是加密的，判断调用函数的来源
 					if (itFrom != "commands") break;
 					//来源于按钮，则弹出弹窗
-					
+
 					let password_result = await dialogs.open(password);
 					if (password_result.id == "Cancel") {
 						//如果点击取消
@@ -210,8 +212,8 @@ joplin.plugins.register({
 						await joplin.commands.execute("textCut");
 						await joplin.commands.execute("insertText", "[[crypted]]<br>" + aes_body);
 						// await joplin.commands.execute("editor.setText","[[crypted]]<br>" + aes_body)
-						console.log("ency->",note);
-						
+						console.log("ency->", note);
+
 						encrypt_time = (new Date()).valueOf();
 						break;
 					}
