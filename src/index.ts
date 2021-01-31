@@ -127,7 +127,7 @@ joplin.plugins.register({
 				id: 'Encrypt',
 			},
 			{
-				id: 'CancelEncrypt',
+				id: 'Cancel',
 			}
 		]);
 
@@ -143,7 +143,7 @@ joplin.plugins.register({
 				id: 'Decryption',
 			},
 			{
-				id: 'CancelDecryption',
+				id: 'Cancel',
 			},
 		]);
 
@@ -152,7 +152,7 @@ joplin.plugins.register({
 			// 尝试次数
 			let try_number = note.try_number;
 			while (true) {
-				if (note.body.startsWith("!!!<br>>>> Do not change this file <br>")) {
+				if (note.body.startsWith("[[crypted]]<br>")) {
 					//文件是加密的
 					if (note.is_change != 0) {
 						//如果有改动加密文件，则先执行undo，利用这个阻止修改加密文件，但是在没有安装该插件的软件中是可以修改的
@@ -164,11 +164,11 @@ joplin.plugins.register({
 					}
 					// 解密过程,弹出解密弹窗
 					let password_result = await dialogs.open(passwordDecryption);
-					if (password_result.id == "CancelDecryption") {
+					if (password_result.id == "Cancel") {
 						break;
 					} else if (password_result.id == "Decryption") {
 						// 有密码且不为空，则解密
-						let aes_body = note.body.split("<br>")[2]
+						let aes_body = note.body.split("<br>")[1]
 						let Dbody = getDAes(aes_body, password_result.formData.password.password)
 						console.log("aes_body->", aes_body);
 						console.log("key->", password_result.formData.password.password);
@@ -195,7 +195,7 @@ joplin.plugins.register({
 					//来源于按钮，则弹出弹窗
 					
 					let password_result = await dialogs.open(password);
-					if (password_result.id == "CancelEncrypt") {
+					if (password_result.id == "Cancel") {
 						//如果点击取消
 						break;
 					} else if (password_result.id == "Encrypt") {
@@ -203,13 +203,13 @@ joplin.plugins.register({
 						// 没有密码，或者密码为空，则弹出弹窗设置密码，并用密码加密文本
 						console.log(password_result.id, password_result.formData.password.password);
 						let aes_body = getAES(note.body, password_result.formData.password.password);
-						// await joplin.data.put(["notes", note.id], null, { body: "!!!<br>>>> Do not change this file <br>" + aes_body });
-						// note.body = "!!!<br>>>> Do not change this file <br>" + aes_body;
+						// await joplin.data.put(["notes", note.id], null, { body: "[[crypted]]<br>" + aes_body });
+						// note.body = "[[crypted]]<br>" + aes_body;
 						// 发现一个新的api可以直接改变note的内容
 						await joplin.commands.execute("textSelectAll");
 						await joplin.commands.execute("textCut");
-						await joplin.commands.execute("insertText", "!!!<br>>>> Do not change this file <br>" + aes_body);
-						// await joplin.commands.execute("editor.setText","!!!<br>>>> Do not change this file <br>" + aes_body)
+						await joplin.commands.execute("insertText", "[[crypted]]<br>" + aes_body);
+						// await joplin.commands.execute("editor.setText","[[crypted]]<br>" + aes_body)
 						console.log("ency->",note);
 						
 						encrypt_time = (new Date()).valueOf();
