@@ -1,5 +1,6 @@
 [English](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README.md)|[中文](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README_zh.md)
-这是原项目的一个分支：https://github.com/CapZhang/joplin-plugin-encrypt-notes
+
+这是[原项目](https://github.com/CapZhang/joplin-plugin-encrypt-notes)的一个分支
 
 
 # Joplin 加密插件

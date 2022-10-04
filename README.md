@@ -1,4 +1,5 @@
 [English](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README.md)|[中文](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README_zh.md)
+
 This is a fork branch from https://github.com/CapZhang/joplin-plugin-encrypt-notes
 
 
