@@ -1,7 +1,11 @@
 [English](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README.md)|[中文](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README_zh.md)
+This is a fork branch from https://github.com/CapZhang/joplin-plugin-encrypt-notes
+
 
 
 # Joplin Encryption Plugin
+This is a [joplin](https://joplinapp.org/) notebook plugin.
+
 
 ## notice
 
@@ -17,7 +21,9 @@ Copy the `publish/File_encryption.jpl` file to your computer and import the plug
 
 ---
 
-# Joplin Plugin
+# How to Build
+
+> [Generator Doc](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/GENERATOR_DOC.md)
 
 This is a template to create a new Joplin plugin.
 
