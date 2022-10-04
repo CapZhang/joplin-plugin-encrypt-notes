@@ -6,15 +6,27 @@ This is a fork branch from https://github.com/CapZhang/joplin-plugin-encrypt-not
 
 # Joplin Encryption Plugin
 This is a [joplin](https://joplinapp.org/) notebook plugin.
+## Usage
 
+click the top-right lock icon to encrypt.
 
-## notice
+Every time when you re-enter the encrypted note, the unlock dialog pop-up.
+
+## Notice
 
 1. It has been tested and used only under Windows 10
+
 2. The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the CryptoJS library
+
 3. No password retrieval function, not anywhere to save the password, password lost without any means to recover
+
 4. The plugin prohibits modification of encrypted files, but it can be modified without installation of the plugin, including mobile APP;The modified encrypted file cannot be decrypted properly
-5. Use `[[crypted]]<br>` string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. V_V
+
+5. Use `[[crypted]]<br>` string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. 
+
+6. The [note history](https://joplinapp.org/note_history/) may expose your sensitive information. It can be avoid by disabling this function, but there is still a chance for you to recover important notes with the function when you loose your password.
+
+7. This is a one-time encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it.
 
 ## use method
 
@@ -48,3 +60,7 @@ To update the plugin framework, run `npm run update`.
 In general this command tries to do the right thing - in particular it's going to merge the changes in package.json and .gitignore instead of overwriting. It will also leave "/src" as well as README.md untouched.
 
 The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
+
+
+
+
