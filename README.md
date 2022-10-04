@@ -1,3 +1,22 @@
+[English](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README.md)|[中文](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README_zh.md)
+
+
+# Joplin Encryption Plugin
+
+## notice
+
+1. It has been tested and used only under Windows 10
+2. The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the CryptoJS library
+3. No password retrieval function, not anywhere to save the password, password lost without any means to recover
+4. The plugin prohibits modification of encrypted files, but it can be modified without installation of the plugin, including mobile APP;The modified encrypted file cannot be decrypted properly
+5. Use `[[crypted]]<br>` string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. V_V
+
+## use method
+
+Copy the `publish/File_encryption.jpl` file to your computer and import the plugin with Joplin
+
+---
+
 # Joplin Plugin
 
 This is a template to create a new Joplin plugin.
