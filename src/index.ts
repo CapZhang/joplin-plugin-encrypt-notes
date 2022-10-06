@@ -19,13 +19,16 @@ ALTER TABLE Production ADD COLUMN NEW Text
 const CryptoJS = require("crypto-js")
 
 /**
- * Overwrite debug with 2 parameter lable, any
+ * Overwrite debug with 2 parameter 
+ * @param {string} lable debug title or comment
+ * @param {any} obj anything that can be output
+ * 
  **/
 console.debug = (lable:string, obj) => { console.log("NotesEncrypt-Debug(", (new Date()), "):", lable, obj); }
 
-const PREFIX_KEY = "__ENCRYPTNOTE__";
-const PREFIX_CRYPT_TYPE = "__?UTF8_AES_CBC128_PKCS7_V101__";
-const PREFIX_SPLIT = "__DATA__";
+var PREFIX_KEY = ";;ENCRYPTNOTE?";
+var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V101;";
+var PREFIX_SPLIT = ";DATA;";
 
 function getAesString(data, key_/*, iv_*/) {//加密
 	var key = keyPreprocessor(key_);
@@ -146,6 +149,10 @@ joplin.plugins.register({
 		
 		const note = await joplin.workspace.selectedNote();
 		note.try_number = 0;
+		var current_note_backup = "";
+		var currentIsEncrypted = note.body.startsWith(PREFIX_KEY);
+		var command_let_change_flag = false;
+		
 		// 上一次加密的时间戳
 		//let encrypt_time = (new Date()).valueOf();
 		await joplin.commands.register({
@@ -166,9 +173,8 @@ joplin.plugins.register({
 		// 加一个按钮
 		await joplin.views.toolbarButtons.create('fileEncry', 'fileEncry', ToolbarButtonLocation.NoteToolbar);
 		// await joplin.views.toolbarButtons.create('fileEncry', 'fileEncry', ToolbarButtonLocation.EditorToolbar);
-
-		//var current_note_encrypt = "";
-		var currentIsEncrypted = note.body.startsWith(PREFIX_KEY);
+		
+		
 		await joplin.workspace.onNoteSelectionChange(async (event: any) => {
 			// 当前选中的文件
 			try {
@@ -177,64 +183,46 @@ joplin.plugins.register({
 				//note.is_change = 0;
 				note.try_number = 0;
 				checkPrefix(note.body);
-				var auto_popup_val = await joplin.settings.value(AUTO_POPUP_ID);
-				if (auto_popup_val)
-					cryptCommand(note, "onNoteSelectionChange");
+				cryptCommand(note, "onNoteSelectionChange");
 			} catch (exception){
 				console.error("onNoteSelectionChange");
 				console.error(exception.description);
 			}
 
 		});
-		var command_let_change_flag = false;
+		
 		await joplin.workspace.onNoteChange(async (event: any) => {
-			const note = await joplin.workspace.selectedNote();
-			checkPrefix(note.body);
-			/*currentIsEncrypted = note.body.startsWith(PREFIX_KEY)||currentIsEncrypted;
-			console.debug("currentIsEncrypted=",currentIsEncrypted);
-			console.debug("encrypt_command_flag=",command_let_change_flag);
-			if(!currentIsEncrypted) return;
-			
-			//if (!note.is_change) note.is_change = 0;
 			if (command_let_change_flag) {
-				note.try_number = 0;
-				//note.is_change = 0;
 				command_let_change_flag = false;
-			} else {
-				//note.is_change ++ ;
-				//console.debug("note.is_change=",note.is_change);
-				cryptCommand(note, "onNoteChange");
-			}*/
+			}
+			else {
+				const note = await joplin.workspace.selectedNote();
+				if (currentIsEncrypted) {
+					
+						note.try_number = 0;
+						cryptCommand(note, "onNoteChange");
+					
+				} else {
+					checkPrefix(note.body);
+				}
+			}
 			
 		});
-
-		
-
-		/** 	
-		async function codemirror_cmd(cm_cmd, args){
-			await joplin.commands.execute('editor.execCommand', {
-				name: CODEMIRROR_TOGGLE_COMMAND,
-				args: [await joplin.settings.value(SETTING_PREFIX),await joplin.settings.value(SETTING_SUFFIX),toggle()] 
-			});
-		}
-		**/
-
-		/** */
-		async function setNote(note:string){
-			await joplin.commands.execute("textSelectAll");
-			command_let_change_flag = true;
-			await joplin.commands.execute("textCut");
-			command_let_change_flag = true;
-			await joplin.commands.execute("insertText", note);
-			
-		}
 
 		await joplin.contentScripts.register(
 			ContentScriptType.CodeMirrorPlugin,
 			"codemirror_script",
 			'./' + "codemirror_script.js"
 		);
-
+		/**Codemirror Command Script template */
+		/** 	
+		async function codemirror_cmd(cm_cmd, args){
+			await joplin.commands.execute('editor.execCommand', {
+				name: CODEMIRROR_COMMAND,
+				args: [param1,param2 ... ] 
+			});
+		}
+		**/
 		async function toggleReadonly(enable:Boolean){
 			await joplin.commands.execute('editor.execCommand', {
 				name: 'toggleReadonly',
@@ -242,11 +230,33 @@ joplin.plugins.register({
 			});
 		}
 
+		/** */
+		async function setNote(note:string){
+			
+			await joplin.commands.execute("textSelectAll");
+			command_let_change_flag = true;
+			await joplin.commands.execute("textCut");
+			command_let_change_flag = true;
+			await joplin.commands.execute("insertText", note);
+			
+			//command_let_change_flag=true;
+			//await joplin.commands.execute("editor.setText", note);
+			//command_let_change_flag=true;
+			//await joplin.commands.execute("insertText", " ");//To commit change
+		}
 
+		/**
+		 * Suppose that the text is the first time read, when you use this function
+		 * variable currentIsEncrypted is not determined before
+		 * if need , check currentIsEncrypted ahead the function call.
+		 * @param body 
+		 */
 		async function checkPrefix(body:string){
+			//if (currentIsEncrypted) return;
 			currentIsEncrypted = body.startsWith(PREFIX_KEY);
 			var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
 			toggleReadonly(currentIsEncrypted&&disable_modify);
+			if (currentIsEncrypted)  current_note_backup = body;
 		}
 
 		async function cryptCommand(note, command) {
@@ -257,24 +267,28 @@ joplin.plugins.register({
 					//文件是加密的
 					//如果有改动加密文件，则先执行undo，利用这个阻止修改加密文件，但是在没有安装该插件的软件中是可以修改的
 					//不确定修改后能不能解密成功
-					/*var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
-					// console.debug("disable_mod_enc->",disable_mod);
+					var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
+				    console.debug("disable_mod_enc->",disable_modify);
 					if (disable_modify && command == "onNoteChange"){
 						//console.debug("undo process : note.is_change=",note.is_change);
 						//if ( note.is_change > 0 ) {
 							//note.is_change = 0;
-							setNote(current_note_encrypt);
+							setNote(current_note_backup);
+							toggleReadonly(true);
 						//};
-					}*/
+					}
 					
 					//if(!auto_popup_val && command != "lock_icon_click") return;
 					// 解密过程,弹出解密弹窗
+					
+					var auto_popup_val = await joplin.settings.value(AUTO_POPUP_ID);
+					if (!auto_popup_val && command != "lock_icon_click") break;
 					let password_result = await dialogs.open(decryptionDialog);
 					if (password_result.id == "Cancel") {
 						break;
 					} else if (password_result.id == "Decryption") {
 						// 有密码且不为空，则解密
-						let aes_body = note.body.split(PREFIX_SPLIT)[1]
+						let aes_body = current_note_backup.split(PREFIX_SPLIT)[1]
 						let Dbody = getDAesString(aes_body, password_result.formData.dec_form.dec_password)
 						// console.debug("aes_body->", aes_body);
 						// console.debug("key->", password_result.formData.dec_form.dec_password);
@@ -320,15 +334,12 @@ joplin.plugins.register({
 							// 发现一个新的api可以直接改变note的内容
 							
 							var result = PREFIX_KEY + PREFIX_CRYPT_TYPE + PREFIX_SPLIT + aes_body;
-
-							setNote(result);
-
-							toggleReadonly(true);
-							// await joplin.commands.execute("editor.setText","[[crypted]]<br>" + aes_body)
+							//checkprefix function operation
+							current_note_backup = result;
 							currentIsEncrypted = true;
-							//note.is_change = 0;
-							// console.debug("ency->", note);
-							//encrypt_time = (new Date()).valueOf();
+							await setNote(result);
+							var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
+							await toggleReadonly(disable_modify);
 							break;
 						}
 					}

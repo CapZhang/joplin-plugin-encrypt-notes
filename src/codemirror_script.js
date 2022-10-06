@@ -8,7 +8,8 @@
  * codemirror(api) document reference
  */
  var cm = null; 
-
+ var is_readonly = false;
+ document.addEventListener('focus', set_readonly);
  /**
   * code mirror api: https://codemirror.net/doc/manual.html
   * code mirror on github: https://github.com/codemirror/codemirror
@@ -19,7 +20,7 @@
  function plugin(CodeMirror, _context) {
 
      /**
-      * toggle format painter is the function which can switch up the painter.
+      * 
       */
      CodeMirror.defineExtension('toggleReadonly', 
      /**
@@ -28,12 +29,18 @@
       */
      function( enable ) {
         cm = this;
-        console.log('codemirror command get:' + enable);
-        cm.setOption('readOnly', enable);
+        is_readonly = enable;
+        set_readonly();
      });
- 
  }
 
+ function set_readonly(){
+    console.log('codemirror command get:' + is_readonly);
+    if(is_readonly) {
+        cm.setOption('readOnly', 'nocursor');
+    }
+    else cm.setOption('readOnly', false);
+ }
  
  
 

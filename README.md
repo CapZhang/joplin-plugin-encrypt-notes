@@ -14,20 +14,21 @@ Every time when you re-enter the encrypted note, the unlock dialog pop-up.
 
 ## Notice
 
-1. It has been tested and used only under Windows 10
+1. It has been tested and used under Windows 7/10. It should be work properly with joplin desktop version.
 
-2. The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the CryptoJS library
+2. The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the [CryptoJS](https://cryptojs.gitbook.io/docs/) library
 
 3. No password retrieval function, not anywhere to save the password, password lost without any means to recover
 
 4. The plugin prohibits modification of encrypted files, but it can be modified without installation of the plugin, including mobile APP;The modified encrypted file cannot be decrypted properly
 
-5. Use `[[crypted]]<br>` string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. 
+5. Use a specified prefix string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. 
 
 6. The [note history](https://joplinapp.org/note_history/) may expose your sensitive information. It can be avoid by disabling this function, but there is still a chance for you to recover important notes with the function when you loose your password.
 
-7. This is a one-time encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it.
+7. This is a disposable encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it.
 
+8. The Plugin is NOT compatible with [rich text editor](https://joplinapp.org/rich_text_editor/), don't use it to encrypt notes in this edit mode.(Editor mode switch button on top-right second line.)
 ## use method
 
 Copy the `publish/File_encryption.jpl` file to your computer and import the plugin with Joplin
