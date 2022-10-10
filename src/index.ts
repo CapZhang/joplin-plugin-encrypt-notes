@@ -27,11 +27,12 @@ const CryptoJS = require("crypto-js")
 console.debug = (lable:string, obj) => { console.log("NotesEncrypt-Debug(", (new Date()), "):", lable, obj); }
 
 var PREFIX_KEY = ";;ENCRYPTNOTE?";
-var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V101;";
+var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V102;";
 var PREFIX_SPLIT = ";DATA;";
 
 function getAesString(data, key_/*, iv_*/) {//加密
 	var key = keyPreprocessor(key_);
+
 	return CryptoJS.AES.encrypt(data, key,
 		{
 			iv: key,
