@@ -28,30 +28,38 @@ const CryptoJS = require("crypto-js")
 console.debug = (lable:string, obj) => { console.log("NotesEncrypt-Debug(", (new Date()), "):", lable, obj); }
 
 var PREFIX_KEY = ";;ENCRYPTNOTE?";
-var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V102;";
+var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V105;";
+var PREFIX_IV = ";IV;"
 var PREFIX_SPLIT = ";DATA;";
+
+
 /**
  * regular express :  /^[0-9a-zA-Z \\\[\]\,\.\<\>\?\/\;\:\'\"\|\{\}\+\=-\_\(\)\*\&\^\%\$\#\@\!\~\`]+$/
  */
 const passwordREG = /^[\u0021-\u007E]+$/
-function getAesString(data, key_/*, iv_*/) {//加密
+function getAesString(data, key_) {//加密
 	var key = keyPreprocessor(key_);
 
+	//AES 128 with 128-bit iv (16 Bytes)
+	//AES 128 with 128-bit initializing vector (16 Bytes)
+	//Random Generator
+	var iv = CryptoJS.lib.WordArray.random(16);
+	
 	return CryptoJS.AES.encrypt(data, key,
 		{
-			iv: key,
+			iv: iv,
 			mode: CryptoJS.mode.CBC,
 			padding: CryptoJS.pad.Pkcs7
-		}).toString();
-	// let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encrypted));
+		}).toString() + PREFIX_IV + CryptoJS.enc.Base64.stringify(iv); //Parse iv to string 
+	//let encData = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encrypted));
 	//返回的是base64格式的密文
 }
-function getDAesString(data, key_/*, iv_*/) {//解密
+function getDAesString(data, key_, ivs:string) {//解密
 	var key = keyPreprocessor(key_);
 	try{
 		var decrypt_data=CryptoJS.AES.decrypt(data, key,
 			{
-				iv: key,
+				iv: (ivs)?CryptoJS.enc.Base64.parse(ivs):key, // for compitability with old version
 				mode: CryptoJS.mode.CBC,
 				padding: CryptoJS.pad.Pkcs7
 			});
@@ -94,7 +102,7 @@ joplin.plugins.register({
 
 		const encryptDialog = await dialogs.create('encrypt_dialog');
 		const encryptDialogForm = `
-		<p class="fileEncry">Input Your PassWord:(Twice)</p>
+		<p class="fileEncry">Input Your Password:(Twice)</p>
 		<form name="enc_form" class="fileEncry">
 			<input type="password" name="password_input_1" autofocus /><br/><br/>
 			Repeat:
@@ -113,7 +121,7 @@ joplin.plugins.register({
 		]);
 
 		const decryptDialogForm = `
-		<p class="fileEncry"> Input Your PassWord:</p>
+		<p class="fileEncry"> Input Your Password:</p>
 		<form name="dec_form" class="fileEncry">
 			<input type="password" name="dec_password" autofocus />
 			<span name="dec_hint">{log}</span>
@@ -124,7 +132,7 @@ joplin.plugins.register({
 		await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,''));
 		await dialogs.setButtons(decryptDialog, [
 			{
-				id: 'Decryption',
+				id: 'Decrypt',
 			},
 			{
 				id: 'Cancel',
@@ -302,10 +310,18 @@ joplin.plugins.register({
 					if (password_result.id == "Cancel") {
 						await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,''));
 						break;
-					} else if (password_result.id == "Decryption") {
+					} else if (password_result.id == "Decrypt") {
 						// 有密码且不为空，则解密
-						let aes_body = current_note_backup.split(PREFIX_SPLIT)[1]
-						let Dbody = getDAesString(aes_body, password_result.formData.dec_form.dec_password)
+						let aes_body = current_note_backup.split(PREFIX_SPLIT)[1].split(PREFIX_IV);
+						// check version
+						let aes_iv = '';
+						if ( aes_body.length > 1 ) {
+							aes_iv = aes_body[1];
+						} else {
+							aes_iv = null;
+						}
+						
+						let Dbody = getDAesString(aes_body[0], password_result.formData.dec_form.dec_password, aes_iv);
 						// console.debug("aes_body->", aes_body);
 						// console.debug("key->", password_result.formData.dec_form.dec_password);
 						if (Dbody) {
@@ -352,7 +368,7 @@ joplin.plugins.register({
 							continue;
 						}
 						if ( password_result.formData.enc_form.password_input_1 != password_result.formData.enc_form.password_input_2 ) {
-							await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,'The two entered passwords do not match.'));
+							await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,'Password not match.'));
 							continue;
 						}
 						await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`, ''));

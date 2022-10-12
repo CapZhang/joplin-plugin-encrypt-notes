@@ -21,10 +21,11 @@
 
 特殊字符串列表
 
-|版本|前缀|版本信息|密文数据分隔符|
-| - | - | - | - |
-| 1.0.0 | `[[crypted]]`|  | `<br/>` |
-| 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V102;` |`;DATA;`|
+|版本|前缀|版本信息|密文数据分隔符|偏移向量分隔符|
+| - | - | - | - | |
+| 1.0.0 | `[[crypted]]`|  | `<br/>` | |
+| 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V101;` |`;DATA;`| |
+| 1.0.5 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V105;` |`;DATA;`| `;IV;` |
 
 ## 注意
 
@@ -48,12 +49,13 @@
     长度 key length：128位
     字符 character：16个UTF8 8位字符（数字、拉丁字母以及其他ASCII符号）
     长度不够则补充`0`：如用户设定密钥为`12345abc+` 则补充为`12345abc+0000000`
-- 偏移向量 iv：与密钥相同 （128位）
+- 偏移向量 iv：随机值（1.0.5更新）
 - 填充模式 padding:Pkcs7
 
 ## 安装
 
 复制 `publish/File_encryption.jpl` 文件到你的电脑，然后用 Joplin 导入该插件
+
 
 
 # 从源码构建
@@ -95,3 +97,15 @@ yo joplin
 `npm run dist`
 
 可以运行的插件会在`publish`中生成，扩展名称为`.jpl`
+
+# 反馈
+## 问题报告和功能要求
+可以使用github上的issue反馈问题。
+也可以发送邮件至ztbxxt@hotmail.com。
+
+## 发电
+如果您喜欢我的作品， 
+您的捐赠将是对其最大的认可：<br/>
+<a href='https://Ko-fi.com/ztbxxt'><img src="https://img.shields.io/badge/Donate-Ko_fi-442200.svg" /><img src="https://storage.ko-fi.com/cdn/kofi_stroke_cup.svg" alt="alt text" height="20" width="30" /></a>
+<a href='https://paypal.me/ztbxxt'><img src="https://img.shields.io/badge/Donate-PayPal-2275FF.svg" /><img src="https://www.paypalobjects.com/webstatic/icon/pp32.png" alt="alt text" height="20" width="20" /></a>
+<a href='https://afdian.net/@ztbxxt'><img src="https://img.shields.io/badge/Donate-爱发电-6900CF.svg"/><img src="https://afdian.net/static/img/logo/logo.png" height="20"  width="20" /></a>

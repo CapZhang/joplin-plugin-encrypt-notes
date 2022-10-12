@@ -2,7 +2,7 @@
 	"manifest_version": 1,
 	"id": "joplin-plugin-note-encryption",
 	"app_min_version": "1.6",
-	"version": "1.0.2",
+	"version": "1.0.5",
 	"name": "Note encryption",
 	"description": "A joplin plugin, encrypt selected notes on the joplin desktop client.",
 	"author": "ztbxxt",

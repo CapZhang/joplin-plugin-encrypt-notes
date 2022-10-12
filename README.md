@@ -18,10 +18,11 @@ This is a [joplin](https://joplinapp.org/) notebook plugin.
 
 Key strings change with updating.
 
-|version|prefix string|encode version string| data spliter |
-| - | - | - | - |
-| 1.0.0 | `[[crypted]]`|  | `<br/>` |
-| 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V102;` |`;DATA;`|
+|version|prefix string|encode version string| data spliter | initialization vector |
+| - | - | - | - | - |
+| 1.0.0 | `[[crypted]]`|  | `<br/>` | |
+| 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V102;` |`;DATA;`| |
+| 1.0.5 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V105;` |`;DATA;`| `;IV;` |
 
 ## Notice
 
@@ -50,7 +51,7 @@ Copy the `publish/File_encryption.jpl` file to your computer and import the plug
     length:128-bit
     character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol)
        suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`
-- initialization vector(iv): (128-bit) same as key
+- initialization vector(iv): (128-bit) randomly generated, at the end of the note(update 1.0.5)
 - padding:Pkcs7
 
 
@@ -81,6 +82,15 @@ In general this command tries to do the right thing - in particular it's going t
 
 The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
 
+# Feedback
 
+## Bug report and advice
 
+Leave a issue here or send email to ztbxxt@hotmail.com, if you encounter problems or want to give advice.
 
+## Buy me a coffee
+Wish you enjoy this work. 
+It will be a greet help when you can make a donation:<br/>
+<a href='https://Ko-fi.com/ztbxxt'><img src="https://img.shields.io/badge/Donate-Ko_fi-442200.svg" /><img src="https://storage.ko-fi.com/cdn/kofi_stroke_cup.svg" alt="alt text" height="20" width="30" /></a>
+<a href='https://paypal.me/ztbxxt'><img src="https://img.shields.io/badge/Donate-PayPal-2275FF.svg" /><img src="https://www.paypalobjects.com/webstatic/icon/pp32.png" alt="alt text" height="20" width="20" /></a>
+<a href='https://afdian.net/@ztbxxt'><img src="https://img.shields.io/badge/Donate-爱发电-6900CF.svg"/><img src="https://afdian.net/static/img/logo/logo.png" height="20"  width="20" /></a>
