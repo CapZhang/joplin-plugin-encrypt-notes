@@ -88,9 +88,3 @@ The file that may cause problem is "webpack.config.js" because it's going to be 
 
 Leave a issue here or send email to ztbxxt@hotmail.com, if you encounter problems or want to give advice.
 
-## Buy me a coffee
-Wish you enjoy this work. 
-It will be a greet help when you can make a donation:<br/>
-<a href='https://Ko-fi.com/ztbxxt'><img src="https://img.shields.io/badge/Donate-Ko_fi-442200.svg" /><img src="https://storage.ko-fi.com/cdn/kofi_stroke_cup.svg" alt="alt text" height="20" width="30" /></a>
-<a href='https://paypal.me/ztbxxt'><img src="https://img.shields.io/badge/Donate-PayPal-2275FF.svg" /><img src="https://www.paypalobjects.com/webstatic/icon/pp32.png" alt="alt text" height="20" width="20" /></a>
-<a href='https://afdian.net/@ztbxxt'><img src="https://img.shields.io/badge/Donate-爱发电-6900CF.svg"/><img src="https://afdian.net/static/img/logo/logo.png" height="20"  width="20" /></a>
