@@ -1,4 +1,5 @@
 import joplin from 'api';
+import JoplinViewsDialogs from 'api/JoplinViewsDialogs';
 import { SettingItemType , ToolbarButtonLocation, MenuItemLocation, ContentScriptType } from 'api/types';
 /*********************************************************
  * 
@@ -29,7 +30,10 @@ console.debug = (lable:string, obj) => { console.log("NotesEncrypt-Debug(", (new
 var PREFIX_KEY = ";;ENCRYPTNOTE?";
 var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V102;";
 var PREFIX_SPLIT = ";DATA;";
-
+/**
+ * regular express :  /^[0-9a-zA-Z \\\[\]\,\.\<\>\?\/\;\:\'\"\|\{\}\+\=-\_\(\)\*\&\^\%\$\#\@\!\~\`]+$/
+ */
+const passwordREG = /^[\u0021-\u007E]+$/
 function getAesString(data, key_/*, iv_*/) {//加密
 	var key = keyPreprocessor(key_);
 
@@ -87,15 +91,18 @@ joplin.plugins.register({
 		// 对话框
 		const dialogs = joplin.views.dialogs;
 		// 询问密码的弹窗
+
 		const encryptDialog = await dialogs.create('encrypt_dialog');
-		await dialogs.setHtml(encryptDialog, `
+		const encryptDialogForm = `
 		<p class="fileEncry">Input Your PassWord:(Twice)</p>
 		<form name="enc_form" class="fileEncry">
 			<input type="password" name="password_input_1" autofocus /><br/><br/>
 			Repeat:
-			<input type="password" name="password_input_2"/>
+			<input type="password" name="password_input_2"/><br>
+			<span name="enc_hint">{log}</span>
 		</form>
-		`);
+		`
+		await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,''));
 		await dialogs.setButtons(encryptDialog, [
 			{
 				id: 'Encrypt',
@@ -105,14 +112,17 @@ joplin.plugins.register({
 			}
 		]);
 
-		const decryptionDialog = await dialogs.create('decryption_dialog');
-		await dialogs.setHtml(decryptionDialog, `
+		const decryptDialogForm = `
 		<p class="fileEncry"> Input Your PassWord:</p>
 		<form name="dec_form" class="fileEncry">
 			<input type="password" name="dec_password" autofocus />
+			<span name="dec_hint">{log}</span>
 		</form>
-		`);
-		await dialogs.setButtons(decryptionDialog, [
+		`
+
+		const decryptDialog = await dialogs.create('decryption_dialog');
+		await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,''));
+		await dialogs.setButtons(decryptDialog, [
 			{
 				id: 'Decryption',
 			},
@@ -260,6 +270,10 @@ joplin.plugins.register({
 			if (currentIsEncrypted)  current_note_backup = body;
 		}
 
+		/*async function popDialog(dialogform:string, log:string, title:string, button:string[]){
+			dia.setHtml();
+		}*/
+
 		async function cryptCommand(note, command) {
 			// 尝试次数
 			let try_number = note.try_number;
@@ -284,8 +298,9 @@ joplin.plugins.register({
 					
 					var auto_popup_val = await joplin.settings.value(AUTO_POPUP_ID);
 					if (!auto_popup_val && command != "lock_icon_click") break;
-					let password_result = await dialogs.open(decryptionDialog);
+					let password_result = await dialogs.open(decryptDialog);
 					if (password_result.id == "Cancel") {
+						await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,''));
 						break;
 					} else if (password_result.id == "Decryption") {
 						// 有密码且不为空，则解密
@@ -303,19 +318,23 @@ joplin.plugins.register({
 							await joplin.commands.execute("insertText", Dbody);
 							currentIsEncrypted = false;
 							console.debug("Dbody note->", note);
+							//hint = "";
+							await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,''));
 							break;
 						} else {
 							// 解密失败，继续弹窗
 							try_number += 1;
+							//hint = "Wrong Password";
+							await dialogs.setHtml(decryptDialog, decryptDialogForm.replace(`{log}`,'Wrong password.'));
 							continue;
 						}
 					}
 
-				} else {
-					if (command == "onNoteChange") {
+				} else { // not encrypted
+					/*if (command == "onNoteChange") { 
 						checkPrefix(note.body);
 						break;
-					}
+					}*/
 					// 文件不是加密的，判断调用函数的来源
 					if (command != "lock_icon_click") break;
 					//来源于按钮，则弹出弹窗
@@ -323,29 +342,41 @@ joplin.plugins.register({
 					let password_result = await dialogs.open(encryptDialog);
 					if (password_result.id == "Cancel") {
 						//如果点击取消
+						await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,''));
 						break;
 					} else if ( password_result.id == "Encrypt") {
-						if ( password_result.formData.enc_form.password_input_1 == password_result.formData.enc_form.password_input_2 ) {
-							//点击加密按钮
-							// 没有密码，或者密码为空，则弹出弹窗设置密码，并用密码加密文本
-							// console.debug(password_result.id, password_result.formData.enc_form.password_input_1);
-							let aes_body = getAesString(note.body, password_result.formData.enc_form.password_input_1);
-							// await joplin.data.put(["notes", note.id], null, { body: "[[crypted]]<br>" + aes_body });
-							// note.body = "[[crypted]]<br>" + aes_body;
-							// 发现一个新的api可以直接改变note的内容
-							
-							var result = PREFIX_KEY + PREFIX_CRYPT_TYPE + PREFIX_SPLIT + aes_body;
-							//checkprefix function operation
-							current_note_backup = result;
-							currentIsEncrypted = true;
-							await setNote(result);
-							var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
-							await toggleReadonly(disable_modify);
-							break;
+						if ( !password_result.formData.enc_form.password_input_1.match(passwordREG) ) {
+							await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,
+							  password_result.formData.enc_form.password_input_1 +
+							' is not accepted. Password should only contains number, latin letters and basic symbols.'));
+							continue;
 						}
+						if ( password_result.formData.enc_form.password_input_1 != password_result.formData.enc_form.password_input_2 ) {
+							await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,'The two entered passwords do not match.'));
+							continue;
+						}
+						await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`, ''));
+						//点击加密按钮
+						// 没有密码，或者密码为空，则弹出弹窗设置密码，并用密码加密文本
+						// console.debug(password_result.id, password_result.formData.enc_form.password_input_1);
+						let aes_body = getAesString(note.body, password_result.formData.enc_form.password_input_1);
+						// await joplin.data.put(["notes", note.id], null, { body: "[[crypted]]<br>" + aes_body });
+						// note.body = "[[crypted]]<br>" + aes_body;
+						// 发现一个新的api可以直接改变note的内容
+						
+						var result = PREFIX_KEY + PREFIX_CRYPT_TYPE + PREFIX_SPLIT + aes_body;
+						//checkprefix function operation
+						current_note_backup = result;
+						currentIsEncrypted = true;
+						await setNote(result);
+						var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
+						await toggleReadonly(disable_modify);
+						break;
 					}
 				}
 			}
 		}
+
+		
 	},
 });

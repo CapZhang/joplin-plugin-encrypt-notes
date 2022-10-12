@@ -49,7 +49,7 @@ Copy the `publish/File_encryption.jpl` file to your computer and import the plug
 - key:
     length:128-bit
     character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol)
-       suppose the key is `12345abc+`, it will be filled with `0` like 12345abc+0000000
+       suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`
 - initialization vector(iv): (128-bit) same as key
 - padding:Pkcs7
 
