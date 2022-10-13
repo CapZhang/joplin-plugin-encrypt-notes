@@ -1,4 +1,4 @@
-[English](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README.md)|[中文](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/README_zh.md)
+[English](README.md)|[中文](README_zh.md)
 
 这是[原项目](https://github.com/CapZhang/joplin-plugin-encrypt-notes)的一个分支
 
@@ -60,7 +60,7 @@
 
 # 从源码构建
 
-> [Generator Doc](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/blob/master/GENERATOR_DOC.md)
+> [Generator Doc](GENERATOR_DOC.md)
 
 ## 需要环境
 
@@ -91,7 +91,7 @@ yo joplin
 执行完成后在*工作路径*会产生构建所需的框架文件
 
 ## 构建
-将[src](https://github.com/ZhangTe/joplin-plugin-encrypt-notes/tree/master/src)文件夹下的代码复制到工作路径的`src`中。
+将[src](/tree/master/src)文件夹下的代码复制到工作路径的`src`中。
 
 在命令行工作路径下运行
 `npm run dist`
