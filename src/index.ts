@@ -102,10 +102,10 @@ joplin.plugins.register({
 
 		const encryptDialog = await dialogs.create('encrypt_dialog');
 		const encryptDialogForm = `
-		<p class="fileEncry">Input Your Password:(Twice)</p>
+		<p class="fileEncry">Encryption Password:</p>
 		<form name="enc_form" class="fileEncry">
 			<input type="password" name="password_input_1" autofocus /><br/><br/>
-			Repeat:
+			Confirm Password:
 			<input type="password" name="password_input_2"/><br>
 			<span name="enc_hint">{log}</span>
 		</form>
