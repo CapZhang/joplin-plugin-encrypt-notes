@@ -32,7 +32,8 @@ Key strings change with updating.
 
 - NO password retrieval function, not anywhere to save the password, password lost without any means to recover;
 
-- The [note history](https://joplinapp.org/note_history/) may expose your sensitive information. It can be avoid by disabling this function, but there is still a chance for you to recover important notes using note history when you loose your password;
+- The [note history](https://joplinapp.org/note_history/) may leak sensitive information. It can be avoid by disabling *note history*; however, there will be a chance to recover important notes using *note history* when you loose your password or do something by mistake;
+
    *Suggest: Use a different profile to take private note, and toggle the history note off in this profile. Profile settings on menu bar `file -> Switch profile ->`.*
 
 
