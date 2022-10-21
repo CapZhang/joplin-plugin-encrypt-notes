@@ -355,8 +355,8 @@ joplin.plugins.register({
 						//await joplin.data.post(path: Path, query?: any, body?: any, files?: any[]): Promise<any>;
 
 					
-						await joplin.data.delete(['revisions',note.id]);
-						
+						//await joplin.data.delete(['revisions',note.id]);
+
 						await dialogs.setHtml(encryptDialog, encryptDialogForm.replace(`{log}`,''));
 						break;
 					} else { 
