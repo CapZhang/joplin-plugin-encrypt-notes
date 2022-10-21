@@ -34,6 +34,12 @@
      });
  }
 
+
+ /**
+  * Set codemirror editor to 'readonly' cannot prevent modifying from the command on joplin toolbars,
+  * (I suppose that those command written in some native way.  see joplin reposity )
+  * only the keyboard events listener were disabled.
+  */
  function set_readonly(){
     console.log('codemirror command get:' + is_readonly);
     if(is_readonly) {

@@ -22,35 +22,37 @@
 特殊字符串列表
 
 |版本|前缀|版本信息|密文数据分隔符|偏移向量分隔符|
-| - | - | - | - | |
+| - | - | - | - | - |
 | 1.0.0 | `[[crypted]]`|  | `<br/>` | |
 | 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V101;` |`;DATA;`| |
 | 1.0.5 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V105;` |`;DATA;`| `;IV;` |
 
 ## 注意
 
-- 仅在 windows10 下测试过和使用过
+- 支持Linux和Windows 7/10平台的Joplin，理论上所有*桌面版本*可用插件。其他平台未测试。移动端App目前仍**不支持**插件；
 
-- 该插件使用 CryptoJS 加密文本，不加密附件，数据安全性取决于 [CryptoJS](https://cryptojs.gitbook.io/docs/) 库
+- 该插件使用 CryptoJS 加密文本，不加密附件，数据安全性取决于 [CryptoJS](https://cryptojs.gitbook.io/docs/)；
 
-- 没有找回密码功能，不在任何地方保存密码，密码丢失后没有任何手段找回
+- 没有找回密码功能，不在任何地方保存密码，密码丢失后没有任何手段找回；
 
-- [历史笔记](https://joplinapp.org/note_history )功能可能导致你想加密的内容泄露，禁用该功能可以避免泄露；但是如果你的密码忘记，你将有可能通过历史笔记来恢复重要内容。
+- [历史笔记](https://joplinapp.org/note_history )功能可能导致你想加密的内容泄露，禁用该功能可以避免泄露；但是如果密码忘记，将有可能通过历史笔记来恢复重要内容；
+    *使用建议：私人笔记使用不同的笔记账户（Profile），由于不同Profile可以采用不同设置————因为它们链接不同的数据库,大部分的设置是互相独立的————重要的笔记采用开放的Profile仍然保留历史，私人笔记禁用历史。 笔记账户（Profile）的设置在 `文件->Switch Profile->`。*
 
-- 插件为一次性加密-解密，每次解密后，需要手动重新加密。
+- 插件为一次性加密-解密，每次解密后，需要手动重新加密；
 
-- 加密插件与[富文本编辑器](https://joplinapp.org/rich_text_editor/)不兼容，请不要再富文本编辑模式下加密或解密（尤其是加密）。（富文本编辑器：所见即所得编辑器，操作类似Word，Joplin中首次进入此模式下会有一行黄字提示，切换编辑器模式的按钮在右上角第二行。）
+- 加密插件与[富文本编辑器](https://joplinapp.org/rich_text_editor/)**不兼容**，请不要再富文本编辑模式下加密或解密（尤其是加密）。（富文本编辑器：所见即所得编辑器，操作类似Word，Joplin中首次进入此模式下会有一行黄字提示，切换编辑器模式的按钮在右上角第二行。）
 
 ## 加密算法
 - 算法 algorithm：AES
-- 密文编码 encrypt encode：BASE64
-- 加密模式 encrypt mode：CBC
-- 密钥 key:
+- 密文编码 encryption encode：BASE64
+- 加密模式 encryption mode：CBC
+- 密钥 key：
     长度 key length：128位
     字符 character：16个UTF8 8位字符（数字、拉丁字母以及其他ASCII符号）
     长度不够则补充`0`：如用户设定密钥为`12345abc+` 则补充为`12345abc+0000000`
 - 偏移向量 iv：随机值（1.0.5更新）
-- 填充模式 padding:Pkcs7
+    编码 iv encode：BASE64
+- 填充模式 padding：Pkcs7
 
 ## 安装
 

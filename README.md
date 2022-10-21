@@ -26,17 +26,19 @@ Key strings change with updating.
 
 ## Notice
 
-- It has been tested and used under Windows 7/10. It should work properly with joplin desktop version.
+- It has been tested and used under Windows 7/10. It should work properly with joplin *desktop* version;
 
-- The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the [CryptoJS](https://cryptojs.gitbook.io/docs/) library
+- The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the [CryptoJS](https://cryptojs.gitbook.io/docs/) library;
 
-- No password retrieval function, not anywhere to save the password, password lost without any means to recover
+- NO password retrieval function, not anywhere to save the password, password lost without any means to recover;
 
-- The [note history](https://joplinapp.org/note_history/) may expose your sensitive information. It can be avoid by disabling this function, but there is still a chance for you to recover important notes with the function when you loose your password.
+- The [note history](https://joplinapp.org/note_history/) may expose your sensitive information. It can be avoid by disabling this function, but there is still a chance for you to recover important notes using note history when you loose your password;
+   *Suggest: Use a different profile to take private note, and toggle the history note off in this profile. Profile settings on menu bar `file -> Switch profile ->`.*
 
-- This is a disposable encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it.
 
-- The Plugin is NOT compatible with [rich text editor](https://joplinapp.org/rich_text_editor/), don't use it to encrypt notes in this edit mode.(Editor mode switch button on top-right second line.)
+- This is a disposable encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it;
+    
+- The Plugin is **NOT COMPATIBLE** with [rich text editor](https://joplinapp.org/rich_text_editor/), don't use it to encrypt notes in this edit mode.(Editor mode switch button on top-right second line.)
 ## Installation
 
 Copy the `publish/File_encryption.jpl` file to your computer and import the plugin with Joplin
@@ -45,13 +47,14 @@ Copy the `publish/File_encryption.jpl` file to your computer and import the plug
 
 ## Encryption detail
 - algorithm:AES
-- encode:BASE64
-- encrypt mode:CBC
+- encryption encode:BASE64
+- encryption mode:CBC
 - key:
     length:128-bit
     character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol)
        suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`
 - initialization vector(iv): (128-bit) randomly generated, at the end of the note(update 1.0.5)
+    iv encode: BASE64
 - padding:Pkcs7
 
 
