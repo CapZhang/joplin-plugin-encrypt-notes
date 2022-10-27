@@ -38,6 +38,19 @@
 - [历史笔记](https://joplinapp.org/note_history )功能可能导致你想加密的内容泄露，禁用该功能可以避免泄露；但是如果密码忘记，将有可能通过历史笔记来恢复重要内容；
     *使用建议：私人笔记使用不同的笔记账户（Profile），由于不同Profile可以采用不同设置————因为它们链接不同的数据库,大部分的设置是互相独立的————重要的笔记采用开放的Profile仍然保留历史，私人笔记禁用历史。 笔记账户（Profile）的设置在 `文件->Switch Profile->`。*
 
+    *或者在解密前关闭笔记历史功能，在加密后再打开。*
+
+   > 更多关于笔记历史的内容（英文）
+
+   > [Note history now in Joplin](https://www.patreon.com/posts/note-history-now-27083082)
+
+   > [Note-history user document](https://joplinapp.org/note_history/)
+
+   > [Note-history specification](https://joplinapp.org/spec/history/)
+   
+   > 关闭历史笔记功能（设置里面启用不挑勾）不影响数据库中已存在的笔记历史，但是保留的历史会在设定的天数到期后自动被删除。但是如果把保留天数设置到1，则理论上一天前的历史立刻会被全部删除（未测试）。
+
+
 - 插件为一次性加密-解密，每次解密后，需要手动重新加密；
 
 - 加密插件与[富文本编辑器](https://joplinapp.org/rich_text_editor/)**不兼容**，请不要再富文本编辑模式下加密或解密（尤其是加密）。（富文本编辑器：所见即所得编辑器，操作类似Word，Joplin中首次进入此模式下会有一行黄字提示，切换编辑器模式的按钮在右上角第二行。）

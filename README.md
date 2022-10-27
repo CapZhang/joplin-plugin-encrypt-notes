@@ -26,16 +26,25 @@ Key strings change with updating.
 
 ## Notice
 
-- It has been tested and used under Windows 7/10. It should work properly with joplin *desktop* version;
-
+- It has been tested under Windows 7/10, Linux Mint, Manjaro. It should work properly with joplin *desktop* version under Windows, MacOS and Linux; IOS(?) and Android platform versions don't support plugins yet;
+- 
 - The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the [CryptoJS](https://cryptojs.gitbook.io/docs/) library;
 
 - NO password retrieval function, not anywhere to save the password, password lost without any means to recover;
 
-- The [note history](https://joplinapp.org/note_history/) may leak sensitive information. It can be avoid by disabling *note history*; however, there will be a chance to recover important notes using *note history* when you loose your password or do something by mistake;
+- The note-history may leak sensitive information. It can be avoid by disabling *note history*;
 
-   *Suggest: Use a different profile to take private note, and toggle the history note off in this profile. Profile settings on menu bar `file -> Switch profile ->`.*
+   *Suggest: Use a different profile to take private note, and toggle the history-note off in this profile. Profile settings on menu bar `file -> Switch profile ->`.*
 
+   *Another way: Toggle the histroy-note off before decrypt a note, and toggle history-note on after encrypt.(Toggling history-note off won't delete note history in database.)*
+
+   > More about note-history 
+
+   > [Note history now in Joplin](https://www.patreon.com/posts/note-history-now-27083082)
+
+   > [Note-history user document](https://joplinapp.org/note_history/)
+   
+   > [Note-history specification](https://joplinapp.org/spec/history/)
 
 - This is a disposable encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it;
     
