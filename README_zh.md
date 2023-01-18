@@ -7,7 +7,7 @@
 
 这是[joplin](https://joplinapp.org/)笔记本的一个插件
 
-支持Joplin2.8.8
+支持Joplin2.9.17
 
 ## 使用
 
