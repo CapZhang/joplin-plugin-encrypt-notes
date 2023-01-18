@@ -2,7 +2,7 @@
 
 This is a fork branch from https://github.com/CapZhang/joplin-plugin-encrypt-notes
 
-
+Compatible with Joplin 2.9.17
 
 # Joplin Encryption Plugin
 This is a [joplin](https://joplinapp.org/) notebook plugin.
