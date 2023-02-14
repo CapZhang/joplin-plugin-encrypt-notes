@@ -57,16 +57,16 @@ Copy the `publish/File_encryption.jpl` file to your computer and import the plug
 ---
 
 ## Encryption detail
-- algorithm:AES
-- encryption encode:BASE64
-- encryption mode:CBC
-- key:
-    length:128-bit
-    character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol)
-       suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`
-- initialization vector(iv): (128-bit) randomly generated, at the end of the note(update 1.0.5)
-    iv encode: BASE64
-- padding:Pkcs7
+- algorithm:AES;
+- encryption encode:BASE64;
+- encryption mode:CBC;
+- key:<br/>
+    length:128-bit;<br/>
+    character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol);<br/>
+       suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`;
+- initialization vector(iv): (128-bit) randomly generated, at the end of the note(update 1.0.5)<br/>
+    iv encode: BASE64;
+- padding:Pkcs7;
 
 
 # How to Build
