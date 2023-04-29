@@ -29,6 +29,7 @@
       */
      function( enable ) {
         cm = this;
+        //current_editable = is_readonly;
         is_readonly = enable;
         set_readonly();
      });
@@ -42,6 +43,8 @@
   */
  function set_readonly(){
     console.log('codemirror command get:' + is_readonly);
+    //if (current_editable==is_readonly) return;
+
     if(is_readonly) {
         cm.setOption('readOnly', 'nocursor');
     }

@@ -32,7 +32,7 @@ const CryptoJS = require("crypto-js")
 console.debug = (lable: string, obj: any) => { console.log("NotesEncrypt-Debug(", (new Date()), "):", lable, " -> " ,obj); }
 
 var PREFIX_KEY = ";;ENCRYPTNOTE?";
-var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V107;";
+var PREFIX_CRYPT_TYPE = "UTF8?AES?CBC128?PKCS7?V1101;";
 var PREFIX_IV = ";IV;"
 var PREFIX_SPLIT = ";DATA;";
 
@@ -260,9 +260,12 @@ joplin.plugins.register({
 		 */
 		async function checkPrefix(body:string){
 			//if (currentIsEncrypted) return;
+			let tmp = currentIsEncrypted;
 			currentIsEncrypted = body.startsWith(PREFIX_KEY);
 			var disable_modify = await joplin.settings.value(DISABLE_MOD_ENCRYPTED_ID);
-			toggleReadonly(currentIsEncrypted&&disable_modify);
+			let toggle = currentIsEncrypted&&disable_modify;
+			if (tmp != toggle)
+				toggleReadonly(toggle);
 			if (currentIsEncrypted)  current_note_backup = body;
 		}
  
