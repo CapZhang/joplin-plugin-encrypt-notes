@@ -1,6 +1,6 @@
 {
-  "name": "joplin-plugin-file-encryption",
-  "version": "1.0.0",
+  "name": "joplin-plugin-note-encrypt",
+  "version": "1.1.1",
   "scripts": {
     "dist": "webpack --joplin-plugin-config buildMain && webpack --joplin-plugin-config buildExtraScripts && webpack --joplin-plugin-config createArchive",
     "prepare": "npm run dist",
@@ -9,6 +9,9 @@
   "license": "MIT",
   "keywords": [
     "joplin-plugin"
+  ],
+  "files": [
+    "publish"
   ],
   "devDependencies": {
     "@types/node": "^14.0.14",
@@ -23,9 +26,5 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "yargs": "^16.2.0"
-  },
-  "dependencies": {
-    "crypto-js": "^4.0.0",
-    "sql.js": "^1.4.0"
   }
 }

@@ -1,36 +1,77 @@
-# Joplin 加密插件
+[English](README.md)|[中文](README_zh.md)
 
-## 注意
+This is a fork branch from https://github.com/CapZhang/joplin-plugin-encrypt-notes
 
-1. 仅在 windows10 下测试过和使用过
-2. 该插件使用 CryptoJS 加密文本，不加密附件，数据安全性取决于 CryptoJS 库
-3. 没有找回密码功能，不在任何地方保存密码，密码丢失后没有任何手段找回
-4. 该插件禁止修改加密的文件，但是在没有安装该插件时可以修改，包括移动端 app；修改加密后的文件无法正常解密
-5. 使用`[[crypted]]<br>`字符串判断是否是加密文档，所以不要在你的正常文档的开头写相同的字符串，同理如果你修改加密文件的这个字符串，那么禁止修改加密文件的功能会失效 V_V
 
-## 使用方法
-
-复制 `publish/File_encryption.jpl` 文件到你的电脑，然后用 Joplin 导入该插件
-
----
 
 # Joplin Encryption Plugin
+This is a [joplin](https://joplinapp.org/) notebook plugin.
+Compatible with Joplin 2.9.17
+## Usage
 
-## notice
+- click the top-right lock icon to encrypt.
 
-1. It has been tested and used only under Windows 10
-2. The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the CryptoJS library
-3. No password retrieval function, not anywhere to save the password, password lost without any means to recover
-4. The plugin prohibits modification of encrypted files, but it can be modified without installation of the plugin, including mobile APP;The modified encrypted file cannot be decrypted properly
-5. Use `[[crypted]]<br>` string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled. V_V
+- Every time when you re-enter the encrypted note, the unlock dialog pop-up.(can be toggle off in setting)
 
-## use method
+- The plugin prohibits modification of encrypted files, but it can be modified without installation of the plugin, including mobile APP;The modified encrypted file cannot be decrypted properly. If you want to edit the encrypted note, *enable* modification in advance setting.
+
+- Use a specified prefix string to determine if it is an encrypted document, so Do not write the same string at the beginning of your normal document, for the same reason that if you change this string in an encrypted file, then the disabling function will be disabled.
+
+Key strings change with updating.
+
+|version|prefix string|encode version string| data spliter | initialization vector |
+| - | - | - | - | - |
+| 1.0.0 | `[[crypted]]`|  | `<br/>` | |
+| 1.0.1 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V102;` |`;DATA;`| |
+| 1.0.5 | `;;ENCRYPTNOTE?` |`UTF8?AES?CBC128?PKCS7?V105;` |`;DATA;`| `;IV;` |
+
+## Notice
+
+- It has been tested under Windows 7/10, Linux Mint, Manjaro. It should work properly with joplin *desktop* version under Windows, MacOS and Linux; IOS(?) and Android platform versions don't support plugins yet;
+
+- The plugin uses CryptoJS to encrypt text and does not encrypt attachments. Data security depends on the [CryptoJS](https://cryptojs.gitbook.io/docs/) library;
+
+- NO password retrieval function, not anywhere to save the password, password lost without any means to recover;
+
+- The note-history may leak sensitive information. It can be avoid by disabling *note history*;
+
+   *Suggestion: Use a different profile to take private note, and toggle the history-note off in this profile. Profile settings on menu bar `file -> Switch profile ->`.*
+
+   *Another way: Toggle the histroy-note off before decrypt a note, and toggle history-note on after encrypt.(Toggling history-note off won't delete note history in database.)*
+
+   > More about note-history 
+
+   > [Note history now in Joplin](https://www.patreon.com/posts/note-history-now-27083082)
+
+   > [Note-history user document](https://joplinapp.org/note_history/)
+
+   > [Note-history specification](https://joplinapp.org/spec/history/)
+
+- This is a disposable encryption-decryption, every time you decrypt a note, you have to manually re-encrypt it;
+    
+- The Plugin is **NOT COMPATIBLE** with [rich text editor](https://joplinapp.org/rich_text_editor/), don't use it to encrypt notes in this edit mode.(Editor mode switch button on top-right second line.)
+## Installation
 
 Copy the `publish/File_encryption.jpl` file to your computer and import the plugin with Joplin
 
 ---
 
-# Joplin Plugin
+## Encryption detail
+- algorithm:AES;
+- encryption encode:BASE64;
+- encryption mode:CBC;
+- key:<br/>
+    length:128-bit;<br/>
+    character:16 UTF8 8-bit character (digit, latin-letter, ascii symbol);<br/>
+       suppose the key is `12345abc+`, it will be filled with `0` like `12345abc+0000000`;
+- initialization vector(iv): (128-bit) randomly generated, at the end of the note(update 1.0.5)<br/>
+    iv encode: BASE64;
+- padding:Pkcs7;
+
+
+# How to Build
+
+> [Generator Doc](GENERATOR_DOC.md)
 
 This is a template to create a new Joplin plugin.
 
@@ -54,3 +95,13 @@ To update the plugin framework, run `npm run update`.
 In general this command tries to do the right thing - in particular it's going to merge the changes in package.json and .gitignore instead of overwriting. It will also leave "/src" as well as README.md untouched.
 
 The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
+# Updates
+1.1.1 fix the bug, in rich text editor the title can not be edit properly.
+
+
+# Feedback
+
+## Bug report and advice
+
+Leave a issue here or send email to ztbxxt@hotmail.com, if you encounter problems or want to give advice.
+
